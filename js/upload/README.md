@@ -3,9 +3,18 @@
 ## Demo
 [Demo File Upload](http://blueimp.github.com/jQuery-File-Upload/)
 
-## Setup instructions
+## Setup
 * [How to setup the plugin on your website](https://github.com/blueimp/jQuery-File-Upload/wiki/Setup)
 * [How to use only the basic plugin (minimal setup guide).](https://github.com/blueimp/jQuery-File-Upload/wiki/Basic-plugin)
+
+## Support
+* **Support requests** and **general discussions** about the File Upload plugin can be posted to the official [support forum](https://groups.google.com/d/forum/jquery-fileupload).  
+If your question is not directly related to the File Upload plugin, you might have a better chance to get a reply by posting to [Stack Overflow](http://stackoverflow.com/questions/tagged/blueimp+jquery+file-upload). 
+* **Bugs** in the File Upload plugin can be reported using the [issues tracker](https://github.com/blueimp/jQuery-File-Upload/issues).  
+Please try to reproduce the problem with the [Demo](http://blueimp.github.com/jQuery-File-Upload/) or with an unmodified setup. Problems with customizations should be posted to the [support forum](https://groups.google.com/d/forum/jquery-fileupload), especially for server-side problems.  
+Provide as much details about your test setup as possible (server information, browser and operating system versions).  
+Please also provide a [JSFiddle](http://jsfiddle.net/) to allow to reproduce the problem, if possible.
+* **Feature requests** can also be posted to the [issues tracker](https://github.com/blueimp/jQuery-File-Upload/issues) if the implementation would benefit a broader use case or the plugin could be considered incomplete without that feature. Else, please post your ideas to the [support forum](https://groups.google.com/d/forum/jquery-fileupload).
 
 ## Features
 * **Multiple file upload:**  
@@ -29,9 +38,9 @@
 * **Graceful fallback for legacy browsers:**  
   Uploads files via XMLHttpRequests if supported and uses iframes as fallback for legacy browsers.
 * **HTML file upload form fallback:**  
-  Shows a standard HTML file upload form if JavaScript is disabled.
+  Allows progressive enhancement by using a standard HTML file upload form as widget element.
 * **Cross-site file uploads:**  
-  Supports uploading files to a different domain with Cross-site XMLHttpRequests.
+  Supports uploading files to a different domain with cross-site XMLHttpRequests or iframe redirects.
 * **Multiple plugin instances:**  
   Allows to use multiple plugin instances on the same webpage.
 * **Customizable and extensible:**  
@@ -43,12 +52,12 @@
 
 ## Requirements
 * [jQuery](http://jquery.com/) v. 1.6+
-* [jQuery UI widget factory](http://wiki.jqueryui.com/w/page/12138135/Widget%20factory) v. 1.8+
+* [jQuery UI widget factory](http://wiki.jqueryui.com/w/page/12138135/Widget%20factory) v. 1.8+ (included)
 * [jQuery Iframe Transport plugin](https://github.com/blueimp/jQuery-File-Upload/blob/master/jquery.iframe-transport.js) (included)
 * [JavaScript Templates engine](https://github.com/blueimp/JavaScript-Templates) v. 2.1.0+ (optional)
-* [JavaScript Load Image function](https://github.com/blueimp/JavaScript-Load-Image) v. 1.1.6+ (optional)
-* [JavaScript Canvas to Blob function](https://github.com/blueimp/JavaScript-Canvas-to-Blob) v. 2.0.0+ (optional)
-* [Bootstrap CSS Toolkit](https://github.com/twitter/bootstrap/) v. 2.0+ (optional)
+* [JavaScript Load Image function](https://github.com/blueimp/JavaScript-Load-Image) v. 1.2.1+ (optional)
+* [JavaScript Canvas to Blob function](https://github.com/blueimp/JavaScript-Canvas-to-Blob) v. 2.0.3+ (optional)
+* [Bootstrap CSS Toolkit](https://github.com/twitter/bootstrap/) v. 2.1+ (optional)
 
 The jQuery UI widget factory is a requirement for the basic File Upload plugin, but very lightweight without any other dependencies.  
 The jQuery Iframe Transport is required for [browsers without XHR file upload support](https://github.com/blueimp/jQuery-File-Upload/wiki/Browser-support).  
@@ -60,7 +69,9 @@ The repository also includes the [jQuery XDomainRequest Transport plugin](https:
 
 [Cross-domain File Uploads](https://github.com/blueimp/jQuery-File-Upload/wiki/Cross-domain-uploads) using the [Iframe Transport plugin](https://github.com/blueimp/jQuery-File-Upload/blob/master/js/jquery.iframe-transport.js) require a redirect back to the origin server to retrieve the upload results. The [example implementation](https://github.com/blueimp/jQuery-File-Upload/blob/master/js/main.js) makes use of [result.html](https://github.com/blueimp/jQuery-File-Upload/blob/master/cors/result.html) as a static redirect page for the origin server.
 
-## Browser Support (tested versions)
+## Browsers
+The File Upload plugin is regularly tested with the latest browser versions and supports the following minimal versions:
+
 * Google Chrome - 7.0+
 * Apple Safari - 4.0+
 * Mozilla Firefox - 3.0+
