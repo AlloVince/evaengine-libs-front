@@ -5,8 +5,8 @@
   font-weight: normal;
   font-style: normal;
 }
-[class^="icon-"]:before,
-[class*=" icon-"]:before {
+[class^="icon-social-"]:before,
+[class*=" icon-social-"]:before {
   font-family: 'fontello';
   font-style: normal;
   font-weight: normal;
