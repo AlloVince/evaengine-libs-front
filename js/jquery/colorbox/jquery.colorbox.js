@@ -1,9 +1,6 @@
-// ColorBox v1.3.19.3 - jQuery lightbox plugin
-// (c) 2011 Jack Moore - jacklmoore.com
-// License: http://www.opensource.org/licenses/mit-license.php
 (function ($, document, window) {
 	var
-	// Default settings object.	
+	// Default settings object.
 	// See http://jacklmoore.com/colorbox for details.
 	defaults = {
 		transition: "elastic",
@@ -50,7 +47,7 @@
 		onComplete: false,
 		onCleanup: false,
 		onClosed: false,
-		overlayClose: true,		
+		overlayClose: true,
 		escKey: true,
 		arrowKey: true,
 		top: false,
@@ -66,7 +63,7 @@
 	prefix = 'cbox',
 	boxElement = prefix + 'Element',
 	
-	// Events	
+	// Events
 	event_open = prefix + '_open',
 	event_load = prefix + '_load',
 	event_complete = prefix + '_complete',
@@ -75,7 +72,7 @@
 	event_purge = prefix + '_purge',
 	
 	// Special Handling for IE
-	isIE = !$.support.opacity && !$.support.style, // IE7 & IE8
+	isIE = !$.support.leadingWhitespace, // IE6 to IE8
 	isIE6 = isIE && !window.XMLHttpRequest, // IE6
 	event_ie6 = prefix + '_IE6',
 
@@ -139,8 +136,8 @@
 
 	// Determine the next and previous members in a group.
 	function getIndex(increment) {
-		var 
-		max = $related.length, 
+		var
+		max = $related.length,
 		newIndex = (index + increment) % max;
 		
 		return (newIndex < 0) ? max + newIndex : newIndex;
@@ -154,9 +151,9 @@
 	// Checks an href to see if it is a photo.
 	// There is a force photo option (photo: true) for hrefs that cannot be matched by this regex.
 	function isImage(url) {
-		return settings.photo || /\.(gif|png|jpe?g|bmp|ico)((#|\?).*)?$/i.test(url);
+		return settings.photo || /\.(gif|png|jp(e|g|eg)|bmp|ico)((#|\?).*)?$/i.test(url);
 	}
-	
+
 	// Assigns function results to their respective properties
 	function makeSettings() {
 		var i,
@@ -165,10 +162,10 @@
 		if (data == null) {
 			settings = $.extend({}, defaults);
 			if (console && console.log) {
-				console.log('Error: cboxElement missing settings object')
+				console.log('Error: cboxElement missing settings object');
 			}
 		} else {
-			settings = $.extend({}, data);    		
+			settings = $.extend({}, data);
 		}
 		
 		for (i in settings) {
@@ -177,7 +174,7 @@
 			}
 		}
 		
-		settings.rel = settings.rel || element.rel || 'nofollow';
+		settings.rel = settings.rel || element.rel || $(element).data('rel') || 'nofollow';
 		settings.href = settings.href || $(element).attr('href');
 		settings.title = settings.title || element.title;
 		
@@ -187,7 +184,7 @@
 	}
 
 	function trigger(event, callback) {
-		$.event.trigger(event);
+		$(document).trigger(event);
 		if (callback) {
 			callback.call(element);
 		}
@@ -200,13 +197,12 @@
 		className = prefix + "Slideshow_",
 		click = "click." + prefix,
 		start,
-		stop,
-		clear;
+		stop;
 		
 		if (settings.slideshow && $related[1]) {
 			start = function () {
 				$slideshow
-					.text(settings.slideshowStop)
+					.html(settings.slideshowStop)
 					.unbind(click)
 					.bind(event_complete, function () {
 						if (settings.loop || $related[index + 1]) {
@@ -224,7 +220,7 @@
 			stop = function () {
 				clearTimeout(timeOut);
 				$slideshow
-					.text(settings.slideshowStart)
+					.html(settings.slideshowStart)
 					.unbind([event_complete, event_load, event_cleanup, click].join(' '))
 					.one(click, function () {
 						publicMethod.next();
@@ -256,11 +252,11 @@
 			
 			if (settings.rel !== 'nofollow') {
 				$related = $('.' + boxElement).filter(function () {
-					var data = $.data(this, colorbox), 
+					var data = $.data(this, colorbox),
 						relRelated;
 
 					if (data) {
-						relRelated =  data.rel || this.rel;
+						relRelated =  $(this).data('rel') || data.rel || this.rel;
 					}
 					
 					return (relRelated === settings.rel);
@@ -319,10 +315,10 @@
 			$window = $(window);
 			$box = $tag(div).attr({id: colorbox, 'class': isIE ? prefix + (isIE6 ? 'IE6' : 'IE') : ''}).hide();
 			$overlay = $tag(div, "Overlay", isIE6 ? 'position:absolute' : '').hide();
+			$loadingOverlay = $tag(div, "LoadingOverlay").add($tag(div, "LoadingGraphic"));
 			$wrap = $tag(div, "Wrapper");
 			$content = $tag(div, "Content").append(
 				$loaded = $tag(div, "LoadedContent", 'width:0; height:0; overflow:hidden'),
-				$loadingOverlay = $tag(div, "LoadingOverlay").add($tag(div, "LoadingGraphic")),
 				$title = $tag(div, "Title"),
 				$current = $tag(div, "Current"),
 				$next = $tag(div, "Next"),
@@ -368,9 +364,6 @@
 				interfaceWidth = $leftBorder.width() + $rightBorder.width() + $content.outerWidth(true) - $content.width();
 				loadedHeight = $loaded.outerHeight(true);
 				loadedWidth = $loaded.outerWidth(true);
-				
-				// Setting padding to remove the need to do size conversions during the animation step.
-				$box.css({"padding-bottom": interfaceHeight, "padding-right": interfaceWidth});
 
 				// Anonymous functions here keep the public method from being cached, thereby allowing them to be redefined on the fly.
 				$next.click(function () {
@@ -406,7 +399,7 @@
 					}
 				});
 
-				$('.' + boxElement, document).live('click', function (e) {
+				$(document).delegate('.'+boxElement, 'click', function(e) {
 					// ignore non-left-mouse-clicks and clicks modified with ctrl / command, shift, or alt.
 					// See: http://jacklmoore.com/notes/click-events/
 					if (!(e.which > 1 || e.shiftKey || e.altKey || e.metaKey)) {
@@ -469,16 +462,17 @@
 	};
 
 	publicMethod.position = function (speed, loadedCallback) {
-		var 
-		top = 0, 
-		left = 0, 
+		var
+		css,
+		top = 0,
+		left = 0,
 		offset = $box.offset(),
-		scrollTop, 
+		scrollTop,
 		scrollLeft;
 		
 		$window.unbind('resize.' + prefix);
 
-		// remove the modal so that it doesn't influence the document width/height        
+		// remove the modal so that it doesn't influence the document width/height
 		$box.css({top: -9e4, left: -9e4});
 
 		scrollTop = $window.scrollTop();
@@ -522,11 +516,16 @@
 		$wrap[0].style.width = $wrap[0].style.height = "9999px";
 		
 		function modalDimensions(that) {
-			$topBorder[0].style.width = $bottomBorder[0].style.width = $content[0].style.width = that.style.width;
-			$content[0].style.height = $leftBorder[0].style.height = $rightBorder[0].style.height = that.style.height;
+			$topBorder[0].style.width = $bottomBorder[0].style.width = $content[0].style.width = (parseInt(that.style.width,10) - interfaceWidth)+'px';
+			$content[0].style.height = $leftBorder[0].style.height = $rightBorder[0].style.height = (parseInt(that.style.height,10) - interfaceHeight)+'px';
 		}
-		
-		$box.dequeue().animate({width: settings.w + loadedWidth, height: settings.h + loadedHeight, top: top, left: left}, {
+
+		css = {width: settings.w + loadedWidth + interfaceWidth, height: settings.h + loadedHeight + interfaceHeight, top: top, left: left};
+
+		if(speed===0){ // temporary workaround to side-step jQuery-UI 1.8 bug (http://bugs.jquery.com/ticket/12273)
+			$box.css(css);
+		}
+		$box.dequeue().animate(css, {
 			duration: speed,
 			complete: function () {
 				modalDimensions(this);
@@ -625,15 +624,15 @@
 		}
 		
 		callback = function () {
-			var preload, 
-				i, 
-				total = $related.length, 
-				iframe, 
-				frameBorder = 'frameBorder', 
-				allowTransparency = 'allowTransparency', 
-				complete, 
-				src, 
-				img, 
+			var preload,
+				i,
+				total = $related.length,
+				iframe,
+				frameBorder = 'frameBorder',
+				allowTransparency = 'allowTransparency',
+				complete,
+				src,
+				img,
 				data;
 			
 			if (!open) {
@@ -648,7 +647,8 @@
 			
 			complete = function () {
 				clearTimeout(loadingTimer);
-				$loadingOverlay.hide();
+				// Detaching forces Andriod stock browser to redraw the area underneat the loading overlay.  Hiding alone isn't enough.
+				$loadingOverlay.detach().hide();
 				trigger(event_complete, settings.onComplete);
 			};
 			
@@ -675,13 +675,12 @@
 				
 				// Preloads images within a rel group
 				if (settings.preloading) {
-					preload = [
-						getIndex(-1),
-						getIndex(1)
-					];
-					while (i = $related[preload.pop()]) {
-						data = $.data(i, colorbox);
-						
+					$.each([getIndex(-1), getIndex(1)], function(){
+						var src,
+							img,
+							i = $related[this],
+							data = $.data(i, colorbox);
+
 						if (data && data.href) {
 							src = data.href;
 							if ($.isFunction(src)) {
@@ -695,7 +694,7 @@
 							img = new Image();
 							img.src = src;
 						}
-					}
+					});
 				}
 			} else {
 				$groupControls.hide();
@@ -707,23 +706,33 @@
 				if (frameBorder in iframe) {
 					iframe[frameBorder] = 0;
 				}
+				
 				if (allowTransparency in iframe) {
 					iframe[allowTransparency] = "true";
 				}
-				// give the iframe a unique name to prevent caching
-				iframe.name = prefix + (+new Date());
-				if (settings.fastIframe) {
-					complete();
-				} else {
-					$(iframe).one('load', complete);
-				}
-				iframe.src = settings.href;
+
 				if (!settings.scrolling) {
 					iframe.scrolling = "no";
 				}
-				$(iframe).addClass(prefix + 'Iframe').appendTo($loaded).one(event_purge, function () {
-					iframe.src = "//about:blank";
-				});
+				
+				$(iframe)
+					.attr({
+						src: settings.href,
+						name: (new Date()).getTime(), // give the iframe a unique name to prevent caching
+						'class': prefix + 'Iframe',
+						allowFullScreen : true, // allow HTML5 video to go fullscreen
+						webkitAllowFullScreen : true,
+						mozallowfullscreen : true
+					})
+					.one('load', complete)
+					.one(event_purge, function () {
+						iframe.src = "//about:blank";
+					})
+					.appendTo($loaded);
+				
+				if (settings.fastIframe) {
+					$(iframe).trigger('load');
+				}
 			} else {
 				complete();
 			}
@@ -787,7 +796,7 @@
 		href = settings.href;
 		
 		loadingTimer = setTimeout(function () {
-			$loadingOverlay.show();
+			$loadingOverlay.show().appendTo($content);
 		}, 100);
 		
 		if (settings.inline) {
@@ -806,7 +815,7 @@
 		} else if (isImage(href)) {
 			$(photo = new Image())
 			.addClass(prefix + 'Photo')
-			.error(function () {
+			.bind('error',function () {
 				settings.title = false;
 				prep($tag(div, 'Error').html(settings.imgError));
 			})
@@ -817,7 +826,7 @@
 				if (settings.scalePhotos) {
 					setResize = function () {
 						photo.height -= photo.height * percent;
-						photo.width -= photo.width * percent;	
+						photo.width -= photo.width * percent;
 					};
 					if (settings.mw && photo.width > settings.mw) {
 						percent = (photo.width - settings.mw) / photo.width;
@@ -853,7 +862,7 @@
 				photo.src = href;
 			}, 1);
 		} else if (href) {
-			$loadingBay.load(href, settings.data, function (data, status, xhr) {
+			$loadingBay.load(href, settings.data, function (data, status) {
 				prep(status === 'error' ? $tag(div, 'Error').html(settings.xhrError) : $(this).contents());
 			});
 		}
@@ -889,7 +898,7 @@
 			$overlay.fadeTo(200, 0);
 			
 			$box.stop().fadeTo(300, 0, function () {
-				 
+			
 				$box.add($overlay).css({'opacity': 1, cursor: 'auto'}).hide();
 				
 				trigger(event_purge);
@@ -911,8 +920,9 @@
 		$box = null;
 		$('.' + boxElement)
 			.removeData(colorbox)
-			.removeClass(boxElement)
-			.die();
+			.removeClass(boxElement);
+
+		$(document).undelegate('.'+boxElement);
 	};
 
 	// A method for fetching the current element ColorBox is referencing.
@@ -923,4 +933,4 @@
 
 	publicMethod.settings = defaults;
 
-}(jQuery, document, this));
+}(jQuery, document, window));
